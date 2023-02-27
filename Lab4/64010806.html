@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head></head>
+    <body>
+        <div id="maincontainer"></div>
+        <script>
+            
+            const Container = document.getElementById("maincontainer");
+            
+            // add Header 
+            const Header = document.createElement("h2");
+            Header.textContent = "Exercise 04: JavaScript&DOM";
+            Container.appendChild(Header);
+
+            // date and time
+            let bt_dateAndTime = document.createElement("button");
+            bt_dateAndTime.innerHTML = "click me to display Date and Time";
+            bt_dateAndTime.style.marginBottom = "8px";
+            Container.appendChild(bt_dateAndTime);
+   
+            let dateAndTime = document.createElement("div");
+            dateAndTime.hidden = true;
+            dateAndTime.id = "dateAndTime";
+            dateAndTime.innerHTML = new Date().toString();
+            dateAndTime.style.position = "fixed";
+            dateAndTime.style.width = "fit-content";
+            dateAndTime.style.right = "0";
+            dateAndTime.style.top = "0";
+            dateAndTime.style.border = "4px solid black";
+            Container.appendChild(dateAndTime);
+
+            let i = 0;
+
+            let colorChange = () => {
+                let color = ["yellow","#ffff","orange","blue","green","#012f"];
+                let fontcolor  = ["ornage","#02fe","red","violent","yellow","blue"];
+                dateAndTime.style.backgroundColor = color[i];
+                dateAndTime.style.color = fontcolor[i];
+                if (i==5) i = 0;
+                i = i+1;
+            }
+
+
+            let Myworker = null;
+
+            let createWorker = () => {
+                let worker = new Worker("worker.js");
+                bt_dateAndTime.style.visibility = "hidden";
+                colorChange();
+                dateAndTime.innerHTML = new Date().toString();
+                dateAndTime.hidden = false;
+                worker.onmessage = (e) => {
+                    dateAndTime.innerHTML = e.data;
+                    colorChange();
+                };
+                return worker;
+            };
+
+            let deleteWorker = () => {
+                Myworker.terminate();
+            };
+
+            bt_dateAndTime.onclick = () => {
+                Myworker = createWorker();
+            };
+            dateAndTime.onclick = () => {
+                if (dateAndTime.style.position == "fixed") {
+                    deleteWorker();
+                    dateAndTime.style.position = "relative";
+                    bt_dateAndTime.style.display = "none";
+                } else {
+                    Myworker = createWorker();
+                    dateAndTime.style.position = "fixed"
+                    bt_dateAndTime.style.display = "block";
+                    bt_dateAndTime.style.paddingBottom = "5px";
+                }
+            }
+            Container.appendChild(document.createElement("br"));
+
+
+            // Personal Infos.
+            Container.appendChild(document.createElement("br"));
+            const person = document.createElement("person");
+            person.textContent = "Personal Info";
+            Container.appendChild(person);
+            person.style.textDecoration = "underline";
+            person.style.color = "plum";
+            person.style.cursor = "pointer";
+
+            person.addEventListener('mouseover', () => {
+                person.style.backgroundColor = "yellow";
+                person.style.color = "blue";
+            });
+            person.addEventListener('mouseout', () => {
+                person.style.backgroundColor = "transparent";
+                person.style.color = "plum";
+            });
+
+            person.addEventListener('click', () => {
+                MyInfo.hidden = !MyInfo.hidden;
+            });
+
+            const MyInfo = document.createElement("person_info");
+            MyInfo.hidden = true;
+
+            const nameAndSurname = document.createElement("li")
+            nameAndSurname.textContent = "Name : Withun & Surname : Watcharakritwekhin , ID: 64010806";
+            MyInfo.appendChild(nameAndSurname);
+
+            const subject = document.createElement("li");
+            subject.textContent = "Subject : WEB APPLICATION DEVELOPMENT";
+            MyInfo.appendChild(subject);
+
+            const semester = document.createElement("li");
+            semester.textContent = "Semester : 2";
+            MyInfo.appendChild(semester);
+
+            MyInfo.style.marginBlock = "25px";
+            Container.appendChild(MyInfo);
+
+            const snapshot = document.createElement("h1");
+            snapshot.textContent = "Snapshots";
+            Container.appendChild(snapshot);
+
+            let snapshotUL = document.createElement("ul");
+            let snapshotData = [
+                ["GroupBlood", "https://swebtoon-phinf.pstatic.net/20151102_44/1446451629670vEsK3_JPEG/mobile28720x123029.jpg?type=crop540_540"],
+                ["ActionBlood", "https://mpics.mgronline.com/pics/Images/558000004626702.JPEG"],
+                ["BloodPlaying", "http://topicstock.pantip.com/siam/topicstock/2012/10/F12736974/F12736974-0.jpg"],
+                ["BloodSing", "https://i.ytimg.com/vi/F5ZXdoE9QEc/maxresdefault.jpg"],
+            ];
+
+            let footer = document.createElement("img");
+            footer.src = "https://i.ytimg.com/vi/9ax6V7hJra4/maxresdefault.jpg";
+
+            snapshotData.forEach((arr) => {
+                let snapshotLi = document.createElement("li");
+                snapshotUL.appendChild(snapshotLi);
+
+                let btSnapshot = document.createElement("a");
+                btSnapshot.innerHTML = arr[0];
+                btSnapshot.href = "#";
+                btSnapshot.onclick = () => {
+                    footer.src = arr[1];
+                }
+                snapshotLi.appendChild(btSnapshot);
+            });
+
+            footer.style.width = "600px";
+            Container.appendChild(snapshotUL);
+            Container.appendChild(footer);
+
+        </script>
+    </body>
+</html>
